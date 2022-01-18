@@ -4,7 +4,10 @@ const tokenTelegramBot = '5061660513:AAH8V_5xurvsNSt4LOjS2MbNgEnFx3jebTE'
 const telegramBot = new Telegraf(tokenTelegramBot)
 let city = '',
     longitud = '',
-    latitud = ''
+    latitud = '',
+    temperature = '',
+    temperatureMin = '',
+    temperatureMax = ''
 
 /* --------------------------------------------------------------------------------------------------------- */
 telegramBot.command('/clima',(ctx)=>{
@@ -18,8 +21,11 @@ telegramBot.on('text',ctx=>{
         latitud = res.data[0].lat
         axios.get(`http://api.openweathermap.org/data/2.5/forecast?lat=${latitud}&lon=${longitud}&appid=7c95aaf2dad8ddd1f7aadf08b64d203a`)
         .then(res=>{
-            // console.log(`Temperatura:${res.data.list[0].main.temp}. Temperatura maxima:${res.data.list[0].main.temp_max}. Temperatura minima:${res.data.list[0].main.temp_min}` )
-            console.log(res.data.list)
+            temperature = Math.round(10*(res.data.list[0].main.temp -273.15))/10
+            temperatureMin = Math.round(10*(res.data.list[0].main.temp_min -273.15))/10
+            temperatureMax = Math.round(10*(res.data.list[0].main.temp_max -273.15))/10
+            ctx.reply(`Temperatura:${temperature}. Temperatura maxima:${temperatureMax}. Temperatura minima:${temperatureMin}` )
+            // console.log(res.data.list[0]) 
         })
         .catch(err=>{
             console.log(err)
